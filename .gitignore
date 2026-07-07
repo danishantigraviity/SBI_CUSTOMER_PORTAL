@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+.npm
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build output
+build/
+dist/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Uploads & reports (don't commit user data)
+backend/uploads/**/*
+!backend/uploads/.gitkeep
+backend/reports/**/*
+!backend/reports/.gitkeep
+
+# Google credentials (sensitive!)
+backend/config/google-vision-key.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Coverage
+coverage/
