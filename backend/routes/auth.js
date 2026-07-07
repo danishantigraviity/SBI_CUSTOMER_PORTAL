@@ -35,18 +35,54 @@ router.post('/admin/login', async (req, res) => {
     if (!staffId || !password)
       return res.status(400).json({ error: 'Staff ID and password required.' });
 
-    const admin = await AdminUser.findOne({ staffId: staffId.toUpperCase() }).select('+password');
-    if (!admin || !admin.isActive)
+    const cleanStaffId = staffId.trim().toUpperCase();
+    console.log(`[Login Attempt] staffId received: "${staffId}" -> normalized: "${cleanStaffId}"`);
+
+    // Ensure ADMIN-001 exists in the database
+    const admin001 = await AdminUser.findOne({ staffId: 'ADMIN-001' });
+    if (!admin001) {
+      console.log('[Auto-seed] ADMIN-001 not found. Auto-seeding ADMIN-001...');
+      const seededAdmin = new AdminUser({
+        staffId: 'ADMIN-001',
+        name: 'System Administrator',
+        email: 'admin@sbi.co.in',
+        password: 'Admin@123',
+        role: 'Manager',
+        branch: 'Chennai',
+        isActive: true
+      });
+      await seededAdmin.save();
+      console.log('[Auto-seed] Seeded ADMIN-001 successfully.');
+    }
+
+    const admin = await AdminUser.findOne({ staffId: cleanStaffId }).select('+password');
+    if (!admin) {
+      console.log(`[Login Failed] staffId "${cleanStaffId}" not found in database.`);
       return res.status(401).json({ error: 'Invalid credentials or account inactive.' });
+    }
+
+    console.log(`[Login Progress] User found: "${admin.name}" (Role: ${admin.role}), isActive: ${admin.isActive}`);
+    if (!admin.isActive) {
+      console.log(`[Login Failed] Account for staffId "${cleanStaffId}" is inactive.`);
+      return res.status(401).json({ error: 'Invalid credentials or account inactive.' });
+    }
 
     const valid = await admin.comparePassword(password);
-    if (!valid) return res.status(401).json({ error: 'Invalid credentials.' });
+    console.log(`[Login Progress] Password match status: ${valid}`);
+    if (!valid) {
+      console.log(`[Login Failed] Invalid password for staffId "${cleanStaffId}".`);
+      return res.status(401).json({ error: 'Invalid credentials.' });
+    }
 
     await AdminUser.findByIdAndUpdate(admin._id, { lastLogin: new Date() });
     const { accessToken, refreshToken } = generateTokens(admin);
     const safeAdmin = admin.toObject(); delete safeAdmin.password;
+    console.log(`[Login Success] staffId "${cleanStaffId}" authenticated successfully.`);
     res.json({ success: true, admin: safeAdmin, accessToken, refreshToken });
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) { 
+    console.error('[Login Error] Unexpected error:', err);
+    res.status(500).json({ error: err.message }); 
+  }
 });
 
 // POST /api/auth/refresh
