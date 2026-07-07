@@ -36,7 +36,7 @@ api.interceptors.response.use(
 );
 
 // ── Auth ──────────────────────────────────────────────────────────
-export const customerLogin = (data) => api.post('/auth/customer/login', data);
+export const customerLogin = (data) => api.post('/customer/start-application', data);
 export const adminLogin    = (data) => api.post('/auth/admin/login', data);
 export const getMe         = ()     => api.get('/auth/me');
 export const createStaff   = (data) => api.post('/auth/admin/create', data);
@@ -63,7 +63,7 @@ export const downloadDocument      = (filename) => api.get(`/kyc/document/${file
 export const checkEligibility = (data) => api.post('/eligibility/check', data);
 
 // ── Reports ───────────────────────────────────────────────────────
-export const getDashboardStats  = ()    => api.get('/reports/dashboard-stats');
+export const getDashboardStats  = ()    => api.get('/admin/dashboard');
 export const getQDProfile       = (id)  => api.get(`/reports/qd/${id}`);
 export const downloadQDPDF      = (id)  => api.get(`/reports/qd/${id}/pdf`, { responseType: 'blob' });
 export const downloadQDExcel    = (id)  => api.get(`/reports/qd/${id}/excel`, { responseType: 'blob' });

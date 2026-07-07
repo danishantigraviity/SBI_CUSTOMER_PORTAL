@@ -743,6 +743,30 @@ repRouter.get('/qd/:appId/excel', auth, async (req, res) => {
 const adminRouter = express.Router();
 const { AdminUser } = require('../models/schemas');
 
+adminRouter.get('/dashboard', auth, async (req, res) => {
+  try {
+    const { Application } = require('../models/schemas');
+    const [total, approved, rejected, pending, fraud, salaried] = await Promise.all([
+      Application.countDocuments(),
+      Application.countDocuments({ status:'Approved' }),
+      Application.countDocuments({ status:'Rejected' }),
+      Application.countDocuments({ status:{ $in:['Pending Review','Under Verification','KYC Pending'] } }),
+      Application.countDocuments({ 'fraud.flagged':true }),
+      Application.countDocuments({ employmentType:'Salaried' }),
+    ]);
+    const cardDist = await Application.aggregate([
+      { $group:{ _id:'$eligibility.recommendedCard', count:{ $sum:1 } } },
+      { $sort:{ count:-1 } },
+    ]);
+    const monthlyTrend = await Application.aggregate([
+      { $group:{ _id:{ year:{ $year:'$createdAt' }, month:{ $month:'$createdAt' } }, count:{ $sum:1 } } },
+      { $sort:{ '_id.year':1,'_id.month':1 } }, { $limit:12 },
+    ]);
+    const avgScore = await Application.aggregate([{ $group:{ _id:null, avg:{ $avg:'$eligibility.score' } } }]);
+    res.json({ success:true, stats:{ total,approved,rejected,pending,fraud,salaried,selfEmployed:total-salaried,avgScore:Math.round(avgScore[0]?.avg||0) }, cardDist, monthlyTrend });
+  } catch (err) { res.status(500).json({ error:err.message }); }
+});
+
 adminRouter.get('/staff', auth, async (req, res) => {
   try {
     const staff = await AdminUser.find({}).select('-password').lean();

@@ -522,7 +522,7 @@ export default function AdminPage() {
           <div className="sbi-dashboard-header-actions">
             <button className="btn btn-sm btn-premium-outline" onClick={exportExcel}>{loading ? <Spinner size={12}/> : ''} Export Excel</button>
             <button className="btn btn-sm btn-premium-outline" onClick={triggerBulkSyncSheets}>Sync Google Sheets</button>
-            <button className="btn btn-sm btn-premium-bank" onClick={() => { logout(); navigate('/apply'); }}>+ New Application</button>
+            <button className="btn btn-sm btn-premium-bank" onClick={() => { logout(); navigate('/'); }}>+ New Application</button>
           </div>
         </div>
         <Grid cols={4} gap={20} style={{ marginBottom:24 }}>
