@@ -220,16 +220,7 @@ export default function CustomerLoginPage() {
               <span>SecureConnect™ • IRDAI Compliant</span>
             </div>
 
-            {/* Optional Small Footer Link for Staff login */}
-            <div style={{ borderTop: '1px dashed #E2E8F0', paddingTop: 12, textAlign: 'center' }}>
-              <Link to="/admin/login" style={{ fontSize: 11.5, color: '#0054A6', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                <span>Staff Login</span>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
-                </svg>
-              </Link>
-            </div>
+
 
           </div>
         </div>

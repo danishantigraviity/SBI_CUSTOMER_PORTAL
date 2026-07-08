@@ -5,7 +5,7 @@ const express    = require('express');
 const kycRouter  = express.Router();
 const { Application } = require('../models/schemas');
 const { upload, uploadKYC, uploadEmployment, handleUploadError } = require('../middleware/upload');
-const { authenticate: auth } = require('../middleware/auth');
+const { authenticate: auth, isStaff } = require('../middleware/auth');
 const { syncToGoogleSheets } = require('../services/googleSheetsService');
 // Removed ocrService imports as per manual KYC workflow requirements
 
@@ -160,7 +160,7 @@ kycRouter.post('/upload', upload.any(), handleUploadError, async (req, res) => {
 
 // GET /api/kyc/document/:filename
 // Secures and streams document downloads with JWT authentication!
-kycRouter.get('/document/:filename', auth, async (req, res) => {
+kycRouter.get('/document/:filename', auth, isStaff, async (req, res) => {
   try {
     // Only logged-in admin staff can access documents
     if (req.isCustomer) {

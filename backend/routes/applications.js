@@ -2,7 +2,7 @@
 const express               = require('express');
 const router                = express.Router();
 const { Application }       = require('../models/schemas');
-const { authenticate, isManagerOrTL } = require('../middleware/auth');
+const { authenticate, isManagerOrTL, isStaff } = require('../middleware/auth');
 const { runFraudChecks }    = require('../services/fraudDetection');
 const { notifyAll }         = require('../services/notificationService');
 const { syncToGoogleSheets } = require('../services/googleSheetsService');
@@ -307,7 +307,7 @@ router.post('/', async (req, res) => {
 });
 
 // GET /api/applications
-router.get('/', authenticate, async (req, res) => {
+router.get('/', authenticate, isStaff, async (req, res) => {
   try {
     const { status, empType, search, fraudFlag, page = 1, limit = 20, sortBy = 'createdAt', order = 'desc' } = req.query;
     const query = {};
@@ -341,7 +341,7 @@ router.get('/', authenticate, async (req, res) => {
 });
 
 // GET /api/applications/:id
-router.get('/:id', authenticate, async (req, res) => {
+router.get('/:id', authenticate, isStaff, async (req, res) => {
   try {
     const app = await Application.findOne({
       $or: [{ _id: req.params.id.match(/^[0-9a-f]{24}$/) ? req.params.id : null }, { applicationId: req.params.id }]
@@ -414,7 +414,7 @@ router.patch('/:id/status', authenticate, isManagerOrTL, async (req, res) => {
 });
 
 // POST /api/applications/:id/notes
-router.post('/:id/notes', authenticate, async (req, res) => {
+router.post('/:id/notes', authenticate, isStaff, async (req, res) => {
   try {
     const { note, followUpAt, followUpType, priority } = req.body;
     const app = await Application.findByIdAndUpdate(req.params.id, {

@@ -63,15 +63,17 @@ mongoose.connect(process.env.MONGODB_URI)
   .catch(err => { logger.error('MongoDB error:', err); process.exit(1); });
 
 // ── Routes ───────────────────────────────────────────────────────
+const { authenticate, isStaff } = require('./middleware/auth');
+
 app.use('/api/auth',          require('./routes/auth'));
 app.use('/api/customer',      require('./routes/customer'));
 app.use('/api/applications',  require('./routes/applications'));
 app.use('/api/kyc',           require('./routes/kyc'));
 app.use('/api/eligibility',   require('./routes/eligibility'));
-app.use('/api/admin',         require('./routes/admin'));
-app.use('/api/reports',       require('./routes/reports'));
-app.use('/api/notifications', require('./routes/notifications'));
-app.use('/api/leads',         require('./routes/leads'));
+app.use('/api/admin',         authenticate, isStaff, require('./routes/admin'));
+app.use('/api/reports',       authenticate, isStaff, require('./routes/reports'));
+app.use('/api/notifications', authenticate, isStaff, require('./routes/notifications'));
+app.use('/api/leads',         authenticate, isStaff, require('./routes/leads'));
 
 // ── Serve Frontend Static Files in Production ─────────────────────
 const frontendBuildPath = path.join(__dirname, 'build');
