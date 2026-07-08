@@ -600,6 +600,20 @@ export default function OnboardingPage() {
     businessName:'', gstNo:'', turnover:'', businessType:'Proprietorship',
   });
 
+  const [loginTime, setLoginTime] = useState('');
+
+  useEffect(() => {
+    let savedTime = localStorage.getItem('sbi_login_time');
+    if (!savedTime) {
+      const options = { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true };
+      savedTime = new Date().toLocaleString('en-US', options);
+      localStorage.setItem('sbi_login_time', savedTime);
+    }
+    setLoginTime(savedTime);
+  }, []);
+
+  const displayName = (fd.name && fd.name.trim() !== '' && fd.name !== 'Guest Customer') ? fd.name : 'SBI Credit User';
+
   const set = k => e => {
     setFd(p => ({ ...p, [k]: e.target.value }));
     if (errors[k]) setErrors(p => ({ ...p, [k]: '' }));
@@ -1369,7 +1383,7 @@ export default function OnboardingPage() {
                 <User size={18} strokeWidth={2.5} />
               </div>
               <div style={{ display:'flex', flexDirection:'column' }}>
-                <span style={{ fontSize:13, fontWeight:800, color:'#0054A6' }}>{fd.name || 'azalgu'}</span>
+                <span style={{ fontSize:13, fontWeight:800, color:'#0054A6' }}>{displayName}</span>
               </div>
             </div>
           </div>
@@ -1383,8 +1397,8 @@ export default function OnboardingPage() {
             {/* Welcome banner */}
             <div className="sbi-welcome-banner">
               <div>
-                <h1 className="premium-font-sora" style={{ fontSize: 28, fontWeight: 900, color: '#0054A6', margin: 0 }}>Hello, {fd.name || 'azalgu'}</h1>
-                <div style={{ fontSize: 12, color: '#64748B', marginTop: 4, fontWeight: 600 }}>Last logged on 19 May 2026, 12:45 PM</div>
+                <h1 className="premium-font-sora" style={{ fontSize: 28, fontWeight: 900, color: '#0054A6', margin: 0 }}>Hello, {displayName}</h1>
+                <div style={{ fontSize: 12, color: '#64748B', marginTop: 4, fontWeight: 600 }}>Last logged on {loginTime || '19 May 2026, 12:45 PM'}</div>
               </div>
               <div>
                 <button className="btn-premium-outline" onClick={() => toast.success('Account data refreshed!')} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 18px', borderRadius: '24px', fontSize: 13, background: 'transparent', color: '#0054A6', border: '1.5px solid #0054A6', fontWeight: 700, cursor: 'pointer' }}>

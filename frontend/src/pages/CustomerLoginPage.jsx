@@ -27,6 +27,8 @@ export default function CustomerLoginPage() {
         const guestEmail = `guest_${Date.now()}_${Math.floor(Math.random() * 1000)}@sbi.co.in`;
         
         await loginCustomer(guestName, guestMobile, guestEmail);
+        const savedTime = new Date().toLocaleString('en-US', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
+        localStorage.setItem('sbi_login_time', savedTime);
         navigate('/customer/application');
       } catch (err) {
         toast.error('Portal initialization failed. Please reload.');
