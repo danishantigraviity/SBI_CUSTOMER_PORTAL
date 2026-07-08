@@ -532,7 +532,9 @@ export default function OnboardingPage() {
   const [uploadProgress, setUploadProgress] = useState({ pan: 0, aadhaar: 0, payslip: 0, bank: 0, gst: 0, empid: 0 });
 
   const [fd, setFd] = useState({
-    name: user?.name||'', mobile: user?.mobile||'', email: user?.email||'',
+    name: (user?.name && user.name !== 'Guest Customer') ? user.name : '',
+    mobile: (user?.mobile && user.name !== 'Guest Customer') ? user.mobile : '',
+    email: (user?.email && user.name !== 'Guest Customer') ? user.email : '',
     dob:'', gender:'Male', pincode:'', state:'', city:'', address:'',
     fatherName: '', motherName: '',
     panNumber: '', aadhaarNumber: '',
@@ -553,9 +555,9 @@ export default function OnboardingPage() {
         const app = data.data;
         setAppId(app._id || app.applicationId);
         setFd({
-          name: app.personal?.name || user?.name || '',
-          mobile: app.personal?.mobile || user?.mobile || '',
-          email: app.personal?.email || user?.email || '',
+          name: (app.personal?.name && app.personal.name !== 'Guest Customer') ? app.personal.name : '',
+          mobile: (app.personal?.mobile && app.personal.name !== 'Guest Customer') ? app.personal.mobile : '',
+          email: (app.personal?.email && app.personal.name !== 'Guest Customer') ? app.personal.email : '',
           dob: app.personal?.dob ? new Date(app.personal.dob).toISOString().split('T')[0] : '',
           gender: app.personal?.gender || 'Male',
           fatherName: app.personal?.fatherName || '',

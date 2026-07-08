@@ -33,7 +33,7 @@ function AppRoutes() {
       <Route path="/" element={!user ? <CustomerLoginPage /> : (isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/customer/application" />)} />
       <Route path="/customer/application" element={<ProtectedCustomer><OnboardingPage /></ProtectedCustomer>} />
       <Route path="/customer/dashboard" element={<Navigate to="/customer/application" replace />} />
-      <Route path="/admin/login" element={!user ? <AdminLoginPage /> : (isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/customer/application" />)} />
+      <Route path="/admin/login" element={(!user || !isAdmin) ? <AdminLoginPage /> : <Navigate to="/admin/dashboard" />} />
       <Route path="/admin/dashboard" element={<ProtectedAdmin><AdminPage /></ProtectedAdmin>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
