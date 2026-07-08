@@ -213,6 +213,8 @@ const ApplicationSchema = new Schema({
   submittedAt:  { type: Date, default: Date.now },
   lastUpdatedBy:{ type: Schema.Types.ObjectId, ref: 'AdminUser' },
   excelRowNo:   Number,
+  googleSheetSynced: { type: Boolean, default: false },
+  googleSheetRow:   Number,
 }, { timestamps: true });
 
 // Auto-generate applicationId
