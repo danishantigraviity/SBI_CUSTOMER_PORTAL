@@ -19,6 +19,64 @@ import { getMyDraft, createDraft, updateDraft, finalizeApplication, uploadKYCDoc
 // ── Constants ─────────────────────────────────────────────────────
 const STEPS = ['Personal Info','KYC Upload','Employment','Eligibility','Review & Submit'];
 
+const MOCK_OFFER_CARDS = [
+  {
+    id: 'travel-elite',
+    name: 'TRAVEL ELITE',
+    badge: 'Travel Offers',
+    badgeBg: 'rgba(99, 102, 241, 0.15)',
+    badgeColor: '#4F46E5',
+    gradient: 'linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, #4338CA 100%)',
+    glow: 'rgba(99, 102, 241, 0.5)',
+    feature: 'Complimentary Lounge & 5x Miles',
+    number: '•••• 8820'
+  },
+  {
+    id: 'cashback-pro',
+    name: 'CASHBACK PRO',
+    badge: 'Cashback',
+    badgeBg: 'rgba(16, 185, 129, 0.15)',
+    badgeColor: '#059669',
+    gradient: 'linear-gradient(135deg, #064E3B 0%, #065F46 60%, #047857 100%)',
+    glow: 'rgba(52, 211, 153, 0.5)',
+    feature: 'Flat 5% Unlimited Cash Back',
+    number: '•••• 4921'
+  },
+  {
+    id: 'prime-rewards',
+    name: 'PRIME REWARDS',
+    badge: 'Rewards',
+    badgeBg: 'rgba(244, 63, 94, 0.15)',
+    badgeColor: '#E11D48',
+    gradient: 'linear-gradient(135deg, #4C0519 0%, #881337 50%, #BE123C 100%)',
+    glow: 'rgba(244, 63, 94, 0.5)',
+    feature: '10x Reward Points on Dining',
+    number: '•••• 3099'
+  },
+  {
+    id: 'yono-sig',
+    name: 'YONO SIGNATURE',
+    badge: 'YONO Offers',
+    badgeBg: 'rgba(245, 158, 11, 0.15)',
+    badgeColor: '#D97706',
+    gradient: 'linear-gradient(135deg, #78350F 0%, #92400E 50%, #B45309 100%)',
+    glow: 'rgba(245, 158, 11, 0.5)',
+    feature: 'Exclusive YONO Partner Deals',
+    number: '•••• 1154'
+  },
+  {
+    id: 'digital-svc',
+    name: 'DIGITAL SERVICES',
+    badge: 'Digital Services',
+    badgeBg: 'rgba(100, 116, 139, 0.15)',
+    badgeColor: '#475569',
+    gradient: 'linear-gradient(135deg, #0F172A 0%, #1E293B 60%, #334155 100%)',
+    glow: 'rgba(148, 163, 184, 0.5)',
+    feature: 'Instant e-KYC & Zero Fee',
+    number: '•••• 9948'
+  }
+];
+
 const DASHBOARD_SLIDES = [
   {
     id: 'elite',
@@ -1439,19 +1497,21 @@ export default function OnboardingPage() {
 
                 {/* 4. Scrolling Quick Services & Banners Marquee */}
                 <div style={{
-                  background: '#ffffff',
-                  border: '1.5px solid #E4EBF6',
-                  borderRadius: 16,
-                  padding: '20px 24px',
-                  boxShadow: '0 4px 20px rgba(11, 31, 69, 0.01)',
+                  background: 'rgba(255, 255, 255, 0.75)',
+                  backdropFilter: 'blur(16px)',
+                  WebkitBackdropFilter: 'blur(16px)',
+                  border: '1.5px solid rgba(228, 235, 246, 0.8)',
+                  borderRadius: 20,
+                  padding: '24px',
+                  boxShadow: '0 12px 32px rgba(11, 31, 69, 0.03)',
                   overflow: 'hidden',
                   position: 'relative'
                 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                    <span style={{ fontSize: 14, fontWeight: 800, color: '#0F172A', fontFamily: "'Sora', sans-serif" }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+                    <span style={{ fontSize: 15, fontWeight: 800, color: '#0F172A', fontFamily: "'Sora', sans-serif", letterSpacing: '-0.3px' }}>
                       Offers & Digital Services
                     </span>
-                    <span style={{ background: '#E6F0FA', color: '#0054A6', fontSize: 10, fontWeight: 800, padding: '3px 8px', borderRadius: 8 }}>
+                    <span style={{ background: 'linear-gradient(135deg, #E6F0FA 0%, #CDE0F7 100%)', color: '#0054A6', fontSize: 10, fontWeight: 800, padding: '4px 10px', borderRadius: 20, boxShadow: '0 2px 8px rgba(0, 84, 166, 0.05)' }}>
                       YONO Offers
                     </span>
                   </div>
@@ -1464,6 +1524,57 @@ export default function OnboardingPage() {
                     }
                     .marquee-container:hover .marquee-content {
                       animation-play-state: paused;
+                    }
+                    .demo-credit-card-wrapper {
+                      perspective: 1000px;
+                      cursor: pointer;
+                      transition: transform 0.3s ease;
+                      flex-shrink: 0;
+                      display: flex;
+                      flex-direction: column;
+                      align-items: center;
+                      gap: 12px;
+                    }
+                    .demo-credit-card {
+                      width: 140px;
+                      height: 220px;
+                      border-radius: 14px;
+                      position: relative;
+                      transform-style: preserve-3d;
+                      transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.5s ease;
+                      overflow: hidden;
+                      border: 1px solid rgba(255, 255, 255, 0.15);
+                      display: flex;
+                      flex-direction: column;
+                      justify-content: space-between;
+                      padding: 14px;
+                      color: #ffffff;
+                    }
+                    .demo-credit-card-wrapper:hover .demo-credit-card {
+                      transform: rotateY(12deg) rotateX(8deg) scale(1.05);
+                      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2), 0 0 20px var(--card-glow-color, rgba(255, 255, 255, 0.2));
+                    }
+                    .demo-credit-card::before {
+                      content: '';
+                      position: absolute;
+                      top: 0;
+                      left: -100%;
+                      width: 200%;
+                      height: 100%;
+                      background: linear-gradient(
+                        115deg,
+                        rgba(255, 255, 255, 0) 30%,
+                        rgba(255, 255, 255, 0.15) 40%,
+                        rgba(255, 255, 255, 0.25) 45%,
+                        rgba(255, 255, 255, 0.05) 50%,
+                        rgba(255, 255, 255, 0) 70%
+                      );
+                      transform: skewX(-15deg);
+                      transition: all 0.6s ease;
+                      pointer-events: none;
+                    }
+                    .demo-credit-card-wrapper:hover .demo-credit-card::before {
+                      left: 100%;
                     }
                   `}} />
 
@@ -1481,8 +1592,8 @@ export default function OnboardingPage() {
                       left: 0,
                       top: 0,
                       bottom: 0,
-                      width: 50,
-                      background: 'linear-gradient(to right, #ffffff 20%, rgba(255,255,255,0))',
+                      width: 60,
+                      background: 'linear-gradient(to right, rgba(255,255,255,0.9) 20%, rgba(255,255,255,0))',
                       zIndex: 2,
                       pointerEvents: 'none'
                     }} />
@@ -1493,8 +1604,8 @@ export default function OnboardingPage() {
                       right: 0,
                       top: 0,
                       bottom: 0,
-                      width: 50,
-                      background: 'linear-gradient(to left, #ffffff 20%, rgba(255,255,255,0))',
+                      width: 60,
+                      background: 'linear-gradient(to left, rgba(255,255,255,0.9) 20%, rgba(255,255,255,0))',
                       zIndex: 2,
                       pointerEvents: 'none'
                     }} />
@@ -1503,38 +1614,73 @@ export default function OnboardingPage() {
                     <div className="marquee-content" style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: 24,
-                      animation: 'marquee-scroll 18s linear infinite',
+                      gap: 28,
+                      animation: 'marquee-scroll 22s linear infinite',
                       width: 'max-content'
                     }}>
-                      {[
-                        '/sbi1.png', '/sbi2.png', '/sbi3.png',
-                        '/sbi1.png', '/sbi2.png', '/sbi3.png'
-                      ].map((imgSrc, idx) => (
+                      {[...MOCK_OFFER_CARDS, ...MOCK_OFFER_CARDS].map((card, idx) => (
                         <div 
                           key={idx} 
-                          className="premium-card-hover" 
-                          style={{ 
-                            width: 120,
-                            height: 190, 
-                            cursor: 'pointer',
-                            flexShrink: 0,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            background: 'transparent'
-                          }}
-                          onClick={() => toast.success(`YONO Partner Offer activated!`)}
+                          className="demo-credit-card-wrapper" 
+                          style={{ '--card-glow-color': card.glow }}
+                          onClick={() => toast.success(`${card.badge} Offer Activated!`)}
                         >
-                          <img 
-                            src={imgSrc} 
-                            alt="SBI Digital Card Offer" 
+                          {/* Offer Badge */}
+                          <span style={{
+                            background: card.badgeBg,
+                            color: card.badgeColor,
+                            fontSize: 9,
+                            fontWeight: 800,
+                            padding: '3px 8px',
+                            borderRadius: 12,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.5px',
+                            border: `1px solid rgba(255, 255, 255, 0.4)`
+                          }}>
+                            {card.badge}
+                          </span>
+
+                          {/* CSS Card */}
+                          <div 
+                            className="demo-credit-card" 
                             style={{ 
-                              width: '100%',
-                              height: '100%', 
-                              objectFit: 'contain' 
-                            }} 
-                          />
+                              background: card.gradient,
+                              boxShadow: `0 8px 20px rgba(0, 0, 0, 0.08), 0 0 10px rgba(255, 255, 255, 0.02)`
+                            }}
+                          >
+                            {/* Card Top: Chip and Contactless */}
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              {/* Chip */}
+                              <div style={{ width: 22, height: 16, borderRadius: 3, background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)', opacity: 0.85, position: 'relative', overflow: 'hidden' }}>
+                                <div style={{ position: 'absolute', top: 0, bottom: 0, left: '33%', width: 1, background: 'rgba(0,0,0,0.15)' }} />
+                                <div style={{ position: 'absolute', top: 0, bottom: 0, left: '66%', width: 1, background: 'rgba(0,0,0,0.15)' }} />
+                                <div style={{ position: 'absolute', left: 0, right: 0, top: '50%', height: 1, background: 'rgba(0,0,0,0.15)' }} />
+                              </div>
+                              {/* Contactless Signal */}
+                              <svg style={{ width: 12, height: 12, fill: 'rgba(255,255,255,0.7)' }} viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                              </svg>
+                            </div>
+
+                            {/* Card Middle: Feature */}
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginTop: 12 }}>
+                              <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.5px', textShadow: '0 1px 2px rgba(0,0,0,0.3)', color: '#FFFFFF' }}>
+                                {card.name}
+                              </div>
+                              <div style={{ fontSize: 7, opacity: 0.85, lineHeight: 1.2, fontWeight: 500 }}>
+                                {card.feature}
+                              </div>
+                            </div>
+
+                            {/* Card Bottom: Number & Logo */}
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
+                              <div style={{ fontSize: 8, fontFamily: 'monospace', opacity: 0.8, letterSpacing: '1px' }}>
+                                {card.number}
+                              </div>
+                              {/* Glowing Hologram */}
+                              <div style={{ width: 16, height: 16, borderRadius: '50%', background: 'linear-gradient(135deg, #38BDF8 0%, #EC4899 50%, #F59E0B 100%)', opacity: 0.8, mixBlendMode: 'screen' }} />
+                            </div>
+                          </div>
                         </div>
                       ))}
                     </div>
