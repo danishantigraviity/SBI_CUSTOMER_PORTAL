@@ -5,6 +5,7 @@
 const mongoose = require('mongoose');
 const bcrypt   = require('bcryptjs');
 const { Schema } = mongoose;
+const { BRANCH_NAME } = require('../config/branchConfig');
 
 // ── 1. Admin / Staff User ────────────────────────────────────────
 const AdminUserSchema = new Schema({
@@ -215,6 +216,7 @@ const ApplicationSchema = new Schema({
   excelRowNo:   Number,
   googleSheetSynced: { type: Boolean, default: false },
   googleSheetRow:   Number,
+  branch:       { type: String, default: BRANCH_NAME },
 }, { timestamps: true });
 
 // Auto-generate applicationId

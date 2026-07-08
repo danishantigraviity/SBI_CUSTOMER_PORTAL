@@ -5,6 +5,7 @@ dns.setServers(['8.8.8.8', '8.8.4.4']);
 require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') });
 const mongoose   = require('mongoose');
 const { AdminUser, Application, Lead, AuditLog, NotificationTemplate, Customer } = require('../models/schemas');
+const { BRANCH_NAME } = require('./branchConfig');
 
 async function seed() {
   await mongoose.connect(process.env.MONGODB_URI);
@@ -29,7 +30,7 @@ async function seed() {
       email: 'admin@sbi.co.in',   
       password: 'Admin@123', 
       role: 'Manager',          
-      branch: 'Chennai' 
+      branch: BRANCH_NAME 
     },
     {
       staffId: 'SBI-TL-001',
@@ -37,7 +38,7 @@ async function seed() {
       email: 'arun.singh@sbi.co.in',
       password: 'Admin@123',
       role: 'Team Leader',
-      branch: 'Chennai'
+      branch: BRANCH_NAME
     }
   ];
 

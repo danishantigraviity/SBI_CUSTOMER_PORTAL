@@ -5,6 +5,7 @@
 require('dotenv').config();
 const { Application } = require('../models/schemas');
 const { google } = require('googleapis');
+const { BRANCH_NAME } = require('../config/branchConfig');
 
 /**
  * Initializes and returns a Google Sheets API client if service account credentials are provided.
@@ -97,6 +98,7 @@ async function syncToGoogleSheets(applicationId) {
     console.log(`  ➔ Email:            "${email}"`);
     console.log(`  ➔ PAN Number:       "${pan}"`);
     console.log(`  ➔ Aadhaar Number:   "${aadhaar}"`);
+    console.log(`  ➔ Branch:           "${app.branch || BRANCH_NAME}"`);
 
     // Standardize monthly salary calculation matching excelService
     const sal = app.salaried?.monthlySalary || Math.round((app.selfEmployed?.annualTurnover || 0) / 12);
@@ -117,7 +119,8 @@ async function syncToGoogleSheets(applicationId) {
         mobile,
         email,
         pan,
-        aadhaar
+        aadhaar,
+        app.branch || BRANCH_NAME
       ];
 
       const savedRow = app.googleSheetRow || app.excelRowNo || 0;
@@ -125,7 +128,7 @@ async function syncToGoogleSheets(applicationId) {
 
       if (savedRow > 1) {
         // Update existing row
-        const range = `${sheetName}!A${savedRow}:H${savedRow}`;
+        const range = `${sheetName}!A${savedRow}:I${savedRow}`;
         console.log(`   Updating Row ${savedRow} in range ${range}...`);
         await sheets.spreadsheets.values.update({
           spreadsheetId,
@@ -136,7 +139,7 @@ async function syncToGoogleSheets(applicationId) {
         targetRowNumber = savedRow;
       } else {
         // Append a new row
-        const range = `${sheetName}!A:H`;
+        const range = `${sheetName}!A:I`;
         console.log(`   Appending new row to sheet ${sheetName}...`);
         const result = await sheets.spreadsheets.values.append({
           spreadsheetId,
@@ -148,7 +151,7 @@ async function syncToGoogleSheets(applicationId) {
 
         const updatedRange = result.data.updates?.updatedRange;
         if (updatedRange) {
-          const match = updatedRange.match(/A(\d+):H\d+/);
+          const match = updatedRange.match(/A(\d+):I\d+/);
           if (match) {
             targetRowNumber = parseInt(match[1], 10);
           }
@@ -202,6 +205,8 @@ async function syncToGoogleSheets(applicationId) {
       aadhaar:             aadhaar,
       "Aadhaar (masked)":  aadhaar,
       aadhaarNumber:       aadhaar,
+      branch:              app.branch || BRANCH_NAME,
+      "Branch":            app.branch || BRANCH_NAME,
 
       // Compatibility & Other metadata
       dob:           app.personal?.dob ? new Date(app.personal.dob).toLocaleDateString('en-IN') : '—',
@@ -274,7 +279,7 @@ module.exports = { syncToGoogleSheets };
       }
       
       // Target Columns Setup
-      var headers = ["App ID", "Customer Name", "Father's Name", "Mother's Name", "Mobile", "Email", "PAN Number", "Aadhaar (masked)"];
+      var headers = ["App ID", "Customer Name", "Father's Name", "Mother's Name", "Mobile", "Email", "PAN Number", "Aadhaar (masked)", "Branch"];
       
       // Create headers if sheet is brand new and empty
       if (sheet.getLastRow() === 0) {
@@ -300,7 +305,8 @@ module.exports = { syncToGoogleSheets };
         getValue(["Mobile", "mobile"]),
         getValue(["Email", "email"]),
         getValue(["PAN Number", "panNumber", "pan"]),
-        getValue(["Aadhaar (masked)", "aadhaarNumber", "aadhaar", "Aadhaar"])
+        getValue(["Aadhaar (masked)", "aadhaarNumber", "aadhaar", "Aadhaar"]),
+        getValue(["Branch", "branch"])
       ];
       
       // Prevent completely blank rows

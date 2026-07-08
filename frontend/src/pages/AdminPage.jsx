@@ -517,7 +517,7 @@ export default function AdminPage() {
         <div className="sbi-dashboard-header">
           <div>
             <h2 className="premium-font-sora sbi-dashboard-title" style={{ color:'#0B1F45', margin:0, fontWeight: 800, fontSize: 24 }}>Dashboard Overview</h2>
-            <div className="sbi-dashboard-subtitle" style={{ fontSize:12, color:'#64748B', marginTop:4, fontWeight: 600 }}>Real-time Monitoring • Branch: Chennai Central • {role}</div>
+            <div className="sbi-dashboard-subtitle" style={{ fontSize:12, color:'#64748B', marginTop:4, fontWeight: 600 }}>Real-time Monitoring • Branch: {user?.branch || 'Krishnagiri'} • {role}</div>
           </div>
           <div className="sbi-dashboard-header-actions">
             <button className="btn btn-sm btn-premium-outline" onClick={exportExcel}>{loading ? <Spinner size={12}/> : ''} Export Excel</button>

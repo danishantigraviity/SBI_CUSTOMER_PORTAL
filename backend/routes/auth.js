@@ -4,6 +4,7 @@ const router          = express.Router();
 const { AdminUser }   = require('../models/schemas');
 const { generateTokens, authenticate } = require('../middleware/auth');
 const jwt             = require('jsonwebtoken');
+const { BRANCH_NAME } = require('../config/branchConfig');
 
 // POST /api/auth/customer/login
 router.post('/customer/login', async (req, res) => {
@@ -48,7 +49,7 @@ router.post('/admin/login', async (req, res) => {
         email: 'admin@sbi.co.in',
         password: 'Admin@123',
         role: 'Manager',
-        branch: 'Chennai',
+        branch: BRANCH_NAME,
         isActive: true
       });
       await seededAdmin.save();

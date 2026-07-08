@@ -6,6 +6,7 @@
 const ExcelJS = require('exceljs');
 const path    = require('path');
 const fs      = require('fs');
+const { BRANCH_NAME } = require('../config/branchConfig');
 
 const HDR_FILL = { type:'pattern', pattern:'solid', fgColor:{ argb:'FF0B1F45' } };
 const HDR_FONT = { color:{ argb:'FFFFFFFF' }, bold:true, size:11, name:'Calibri' };
@@ -48,6 +49,7 @@ async function generateApplicationReport(applications, options = {}) {
 
   const columns = [
     { key:'applicationId',   header:'App ID',             width:18 },
+    { key:'branch',          header:'Branch',              width:16 },
     { key:'name',            header:'Customer Name',       width:22 },
     { key:'fatherName',      header:"Father's Name",       width:22 },
     { key:'motherName',      header:"Mother's Name",       width:22 },
@@ -92,6 +94,7 @@ async function generateApplicationReport(applications, options = {}) {
     const sal = app.salaried?.monthlySalary || Math.round((app.selfEmployed?.annualTurnover || 0) / 12);
     const row = ws.addRow({
       applicationId: app.applicationId,
+      branch:        app.branch || BRANCH_NAME,
       name:          app.personal?.name,
       fatherName:    app.personal?.fatherName || '—',
       motherName:    app.personal?.motherName || '—',
